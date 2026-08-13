@@ -13,6 +13,27 @@
 		return;
 	}
 
+	/**
+	 * Curvas de desaceleracao. O config.php so consegue mandar string, entao a
+	 * opcao `easing` chega como nome e vira funcao aqui.
+	 *
+	 * Todas comecam rapido e terminam devagar (out). Quanto maior o expoente,
+	 * mais longa a cauda — e mais "manteiga" o scroll parece.
+	 */
+	var EASINGS = {
+		// Default do Lenis. Referencia.
+		expoOut: function (t) {
+			return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+		},
+		// Cauda mais longa que a expo: o movimento "pousa" em vez de parar.
+		expoSoft: function (t) {
+			return t === 1 ? 1 : 1 - Math.pow(2, -13 * t);
+		},
+		quintOut: function (t) {
+			return 1 - Math.pow(1 - t, 5);
+		}
+	};
+
 	window.SiteAnim.register('smooth-scroll', function (app) {
 
 		if (!app.settings.lenis || !window.Lenis) {
@@ -28,6 +49,18 @@
 		Object.keys(configured).forEach(function (key) {
 			options[key] = configured[key];
 		});
+
+		// `easing` vem do config como nome; nome desconhecido cai no default.
+		if (typeof options.easing === 'string') {
+			options.easing = EASINGS[options.easing] || EASINGS.expoOut;
+		}
+
+		// `lerp` e `duration` sao exclusivos no Lenis: com lerp definido, o
+		// duration/easing e ignorado. Evita config meio-a-meio sem querer.
+		if (typeof options.lerp === 'number') {
+			delete options.duration;
+			delete options.easing;
+		}
 
 		// Quem controla o loop e o gsap.ticker.
 		options.autoRaf = false;

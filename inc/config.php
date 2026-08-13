@@ -44,9 +44,30 @@ return array(
 	 * gsap.ticker (evita dois requestAnimationFrame concorrentes).
 	 *
 	 * Ver: https://github.com/darkroomengineering/lenis
+	 *
+	 * Para deixar o scroll mais suave, mexa em `duration` e `easing` (nesta
+	 * ordem). O resto raramente precisa mudar.
+	 *
+	 *   duration        Segundos ate a rolagem "assentar". 1.2 e o padrao do
+	 *                   Lenis; 1.6-2.0 da a sensacao de deslize. Acima de ~2.5
+	 *                   o site comeca a parecer lento pra responder.
+	 *   easing          Nome de uma curva definida em assets/js/smooth-scroll.js:
+	 *                   'expoOut' (padrao do Lenis), 'expoSoft' (cauda mais
+	 *                   longa, mais macio) ou 'quintOut' (mais direto).
+	 *   wheelMultiplier Quanto cada "clique" da roda avanca. Abaixo de 1 o
+	 *                   scroll fica mais curto e controlado.
+	 *   syncTouch       No mobile, aplica a mesma interpolacao ao toque. Deixe
+	 *                   false se o scroll de dedo ficar "escorregadio" demais.
+	 *
+	 * Alternativa: trocar `duration`/`easing` por `lerp` (0.05-0.12) da um
+	 * amortecimento continuo, sem duracao fixa. Os dois nao convivem — o JS
+	 * descarta duration/easing se lerp estiver definido.
 	 */
 	'lenis_options' => array(
-		'duration'    => 1.2,
-		'smoothWheel' => true,
+		'duration'        => 1.6,
+		'easing'          => 'expoSoft',
+		'smoothWheel'     => true,
+		'wheelMultiplier' => 0.9,
+		'syncTouch'       => false,
 	),
 );
