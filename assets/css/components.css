@@ -1,0 +1,94 @@
+/* =========================================================================
+   components.css — componentes reutilizaveis.
+
+   Inclui a estrutura minima que as animacoes GSAP esperam encontrar.
+   Estrutura fica aqui; movimento fica no JS.
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   Parallax — estrutura exigida por assets/js/animations/parallax.js
+   ------------------------------------------------------------------------- */
+
+/*
+ * O elemento animado precisa de area sobrando para se deslocar, e o pai
+ * precisa recortar o excedente.
+ *
+ * Elementor:
+ *   Container -> class|parallax-wrap
+ *     Imagem  -> class|js-parallax
+ */
+.parallax-wrap {
+	position: relative;
+	overflow: hidden;
+}
+
+.js-parallax {
+	/* 20% a mais em cada eixo cobre um data-parallax-speed de ate ~0.4. */
+	width: 120%;
+	height: 120%;
+	max-width: none;
+	object-fit: cover;
+	/* So aqui, nunca global. */
+	will-change: transform;
+}
+
+/* -------------------------------------------------------------------------
+   Horizontal scroll — estrutura exigida por
+   assets/js/animations/horizontal-scroll.js
+   ------------------------------------------------------------------------- */
+
+.js-hscroll {
+	position: relative;
+	overflow: hidden;
+}
+
+.js-hscroll__track {
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: stretch;
+	/* A largura vem do conteudo: e ela que define a distancia do scroll. */
+	width: max-content;
+	will-change: transform;
+}
+
+.js-hscroll__item {
+	flex: 0 0 auto;
+}
+
+/*
+ * Fallback quando o JS nao roda (falha de rede, reduced motion, tela pequena):
+ * vira um carrossel horizontal nativo, com snap. O conteudo continua acessivel.
+ */
+.js-hscroll__track {
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+}
+
+.js-hscroll__item {
+	scroll-snap-align: start;
+}
+
+/*
+ * Com o GSAP ativo quem controla o deslocamento e o transform, entao o scroll
+ * nativo do track precisa sair do caminho.
+ */
+.hc-has-animations .js-hscroll__track {
+	overflow-x: visible;
+	scroll-snap-type: none;
+}
+
+/* -------------------------------------------------------------------------
+   Card de exemplo
+   ------------------------------------------------------------------------- */
+
+.card {
+	position: relative;
+	overflow: hidden;
+	border-radius: 16px;
+	transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.card:hover {
+	transform: translateY(-6px);
+	box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+}

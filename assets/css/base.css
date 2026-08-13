@@ -1,0 +1,65 @@
+/* =========================================================================
+   base.css — ajustes globais.
+
+   Coisas que valem para o site inteiro e nao pertencem a nenhum componente.
+   Mantenha enxuto: o Hello Elementor ja faz o reset basico.
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   Scroll
+   ------------------------------------------------------------------------- */
+
+/*
+ * scroll-behavior: smooth do CSS briga com o Lenis (dois motores de scroll).
+ * Quando a camada de animacoes esta ativa, o Lenis manda.
+ */
+.hc-has-animations {
+	scroll-behavior: auto;
+}
+
+/*
+ * Animacoes que deslocam elementos no eixo X costumam criar barra de rolagem
+ * horizontal. `clip` corta sem criar contexto de scroll (ao contrario de
+ * `hidden`, que quebraria o position: sticky dos filhos).
+ */
+body {
+	overflow-x: clip;
+}
+
+/* -------------------------------------------------------------------------
+   Acessibilidade
+   ------------------------------------------------------------------------- */
+
+/* Nunca remova o foco visivel. Se precisar restilizar, restilize. */
+:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 3px;
+}
+
+/* Texto apenas para leitores de tela. */
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* -------------------------------------------------------------------------
+   Midia
+   ------------------------------------------------------------------------- */
+
+img,
+video {
+	max-width: 100%;
+	height: auto;
+}
+
+/* Evita salto de layout enquanto a imagem carrega. */
+img[width][height] {
+	height: auto;
+}

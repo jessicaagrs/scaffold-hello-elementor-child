@@ -1,0 +1,159 @@
+/* =========================================================================
+   animations.css — 3 animacoes CSS puras.
+
+   Por que CSS e nao GSAP?
+   Sao efeitos ciclicos ou de hover: nao dependem de scroll, nao precisam de
+   timeline e nao valem o custo de JS. Todas partem do estado VISIVEL, entao
+   nenhuma delas some se o JS falhar.
+
+   Regra do projeto: animar apenas `transform` e `opacity`.
+   ========================================================================= */
+
+/* =========================================================================
+   1. .anim-float — flutuacao vertical infinita
+   Para icones, selos, imagens decorativas.
+
+   Opcional:
+     style="--float-distance: 14px; --float-duration: 4s;"
+   ========================================================================= */
+
+@keyframes hc-float {
+	from {
+		transform: translate3d(0, 0, 0);
+	}
+	50% {
+		transform: translate3d(0, calc(var(--float-distance, 10px) * -1), 0);
+	}
+	to {
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+.anim-float {
+	animation: hc-float var(--float-duration, 3s) ease-in-out infinite;
+	will-change: transform;
+}
+
+/* Escalona varios elementos irmaos para nao flutuarem em sincronia. */
+.anim-float:nth-of-type(2n) {
+	animation-delay: -0.8s;
+}
+
+.anim-float:nth-of-type(3n) {
+	animation-delay: -1.6s;
+}
+
+/* =========================================================================
+   2. .anim-underline — sublinhado que cresce do centro no hover
+   Para links e titulos.
+
+   Anima `transform: scaleX`, nunca `width` (que causaria reflow a cada frame).
+
+   Opcional:
+     style="--underline-color: #e0245e; --underline-size: 3px;"
+   ========================================================================= */
+
+.anim-underline {
+	position: relative;
+	display: inline-block;
+	text-decoration: none;
+}
+
+.anim-underline::after {
+	content: '';
+	position: absolute;
+	left: 0;
+	bottom: -0.15em;
+	width: 100%;
+	height: var(--underline-size, 2px);
+	background-color: var(--underline-color, currentColor);
+	transform: scaleX(0);
+	transform-origin: center;
+	transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+	will-change: transform;
+	pointer-events: none;
+}
+
+.anim-underline:hover::after,
+.anim-underline:focus-visible::after {
+	transform: scaleX(1);
+}
+
+/* =========================================================================
+   3. .anim-shine — brilho diagonal atravessando no hover
+   Para botoes e cards.
+
+   Opcional:
+     style="--shine-color: rgba(255,255,255,.55); --shine-duration: .8s;"
+   ========================================================================= */
+
+.anim-shine {
+	position: relative;
+	overflow: hidden;
+	/* Cria contexto de empilhamento para o ::before ficar acima do fundo. */
+	isolation: isolate;
+}
+
+.anim-shine::before {
+	content: '';
+	position: absolute;
+	top: -50%;
+	left: -75%;
+	width: 50%;
+	height: 200%;
+	background: linear-gradient(
+		100deg,
+		transparent 0%,
+		var(--shine-color, rgba(255, 255, 255, 0.45)) 50%,
+		transparent 100%
+	);
+	transform: translateX(0) rotate(12deg);
+	transition: transform var(--shine-duration, 0.75s) ease;
+	will-change: transform;
+	pointer-events: none;
+	z-index: 1;
+}
+
+.anim-shine:hover::before,
+.anim-shine:focus-visible::before {
+	transform: translateX(350%) rotate(12deg);
+}
+
+/* =========================================================================
+   prefers-reduced-motion
+
+   Desliga o movimento sem esconder nada. Os elementos ficam no estado final
+   legivel: o sublinhado passa a aparecer direto no hover, o brilho some.
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+	.anim-float {
+		animation: none !important;
+		transform: none !important;
+	}
+
+	.anim-underline::after {
+		transition: none !important;
+	}
+
+	.anim-shine::before {
+		display: none !important;
+	}
+
+	/* Sem transform gratuito nos cards. */
+	.card,
+	.card:hover {
+		transition: none !important;
+		transform: none !important;
+	}
+
+	/* Nada de will-change sobrando ocupando memoria de GPU. */
+	.anim-float,
+	.anim-underline::after,
+	.anim-shine::before,
+	.js-parallax,
+	.js-hscroll__track {
+		will-change: auto !important;
+	}
+}

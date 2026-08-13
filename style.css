@@ -1,0 +1,28 @@
+/*
+Theme Name:   Hello Elementor Child
+Theme URI:    https://example.com
+Description:  Child theme do Hello Elementor com camada de animacoes (GSAP + ScrollTrigger + Lenis).
+              O Elementor cuida do visual; este tema cuida do comportamento.
+Author:       Jessica
+Author URI:   https://example.com
+Template:     hello-elementor
+Version:      1.0.0
+License:      GNU General Public License v2 or later
+License URI:  https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain:  hello-elementor-child
+Tags:         elementor, gsap, animation
+*/
+
+/* -------------------------------------------------------------------------
+   Este arquivo existe por causa do cabecalho acima (o WordPress exige).
+
+   Ele e enfileirado POR ULTIMO, entao serve para overrides rapidos e
+   pontuais durante o desenvolvimento.
+
+   O CSS estruturado do site NAO mora aqui. Ele fica em:
+
+     assets/css/base.css        -> ajustes globais
+     assets/css/components.css  -> componentes reutilizaveis
+     assets/css/animations.css  -> animacoes CSS puras
+
+   ------------------------------------------------------------------------- */
