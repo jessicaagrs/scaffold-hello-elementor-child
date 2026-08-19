@@ -1,0 +1,93 @@
+/* =========================================================================
+   interactions.css — hover / focus / estados de interacao.
+
+   Separado de animations.css de proposito:
+     animations.css   efeitos ciclicos e decorativos (float, shine, underline)
+     interactions.css resposta a uma acao do usuario (hover, focus, active)
+
+   Carrega SEMPRE, em toda pagina — nao passa pelo config de animacoes nem
+   depende de GSAP. Esse e o lugar para hover novo.
+
+   Regra do projeto: animar apenas `transform` e `opacity`.
+   ========================================================================= */
+
+/* =========================================================================
+   1. .hover-lift — sobe e ganha sombra no hover
+   Para cards e botoes.
+
+   Opcional:
+     style="--lift-distance: 8px; --lift-duration: .3s;"
+   ========================================================================= */
+
+.hover-lift {
+	transition:
+		transform var(--lift-duration, 0.28s) cubic-bezier(0.22, 1, 0.36, 1),
+		box-shadow var(--lift-duration, 0.28s) ease;
+	will-change: transform;
+}
+
+.hover-lift:hover,
+.hover-lift:focus-visible {
+	transform: translate3d(0, calc(var(--lift-distance, 6px) * -1), 0);
+	box-shadow: var(--lift-shadow, 0 12px 28px rgba(0, 0, 0, 0.12));
+}
+
+/* =========================================================================
+   2. .hover-zoom — imagem que aproxima dentro da moldura
+   Aplique no WRAPPER; a imagem interna e quem escala.
+
+   Opcional:
+     style="--zoom-scale: 1.12;"
+   ========================================================================= */
+
+.hover-zoom {
+	overflow: hidden;
+}
+
+.hover-zoom img,
+.hover-zoom .hover-zoom__target {
+	transition: transform var(--zoom-duration, 0.5s) cubic-bezier(0.22, 1, 0.36, 1);
+	will-change: transform;
+}
+
+.hover-zoom:hover img,
+.hover-zoom:focus-visible img,
+.hover-zoom:hover .hover-zoom__target {
+	transform: scale(var(--zoom-scale, 1.08));
+}
+
+/* =========================================================================
+   3. .js-tilt — par CSS do modulo assets/js/ui/hover.js
+
+   O JS escreve `transform` inline a cada frame; aqui so definimos a
+   transicao de VOLTA (quando o ponteiro sai e o inline e removido) e o
+   contexto 3d. Sem o JS, o elemento fica inerte — nada quebra.
+   ========================================================================= */
+
+.js-tilt {
+	transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+	transform-style: preserve-3d;
+	will-change: transform;
+}
+
+/* Enquanto o ponteiro esta em cima, o JS manda: transicao curta pra nao
+   "arrastar" atras do cursor. */
+.js-tilt:hover {
+	transition-duration: 0.08s;
+}
+
+/* =========================================================================
+   prefers-reduced-motion
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+	.hover-lift,
+	.hover-zoom img,
+	.hover-zoom .hover-zoom__target,
+	.js-tilt {
+		transition: none !important;
+		transform: none !important;
+		will-change: auto !important;
+	}
+}

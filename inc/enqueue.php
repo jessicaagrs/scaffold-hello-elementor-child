@@ -217,9 +217,10 @@ function hc_debug_log( $message ) {
 function hc_enqueue_styles() {
 
 	$sheets = array(
-		'hc-base'       => 'assets/css/base.css',
-		'hc-components' => 'assets/css/components.css',
-		'hc-animations' => 'assets/css/animations.css',
+		'hc-base'         => 'assets/css/base.css',
+		'hc-components'   => 'assets/css/components.css',
+		'hc-animations'   => 'assets/css/animations.css',
+		'hc-interactions' => 'assets/css/interactions.css',
 	);
 
 	$deps = array();
@@ -353,6 +354,43 @@ function hc_enqueue_scripts() {
 	hc_enqueue_script( 'hc-main', 'assets/js/main.js', array_merge( array( 'hc-core' ), $modules ) );
 }
 add_action( 'wp_enqueue_scripts', 'hc_enqueue_scripts', 20 );
+
+/**
+ * Enfileira a camada de UI — JS de interacao, independente do scroll.
+ *
+ * Diferenca para hc_enqueue_scripts():
+ *   - Roda em TODA pagina; nao consulta inc/config.php.
+ *   - Nao depende de GSAP, ScrollTrigger, Lenis nem do registry do SiteAnim.
+ *   - Se a camada de animacoes abortar (lib faltando, pagina fora do config),
+ *     estes scripts continuam carregando normalmente.
+ *
+ * Cada modulo em assets/js/ui/ e autossuficiente: escuta o proprio
+ * DOMContentLoaded e nao depende da ordem de carregamento. Para adicionar um
+ * novo efeito, crie o arquivo e registre uma linha no array $modules abaixo.
+ *
+ * @return void
+ */
+function hc_enqueue_ui_scripts() {
+
+	// No editor do Elementor os widgets re-renderizam a todo momento; os
+	// modulos usam um guard de dataset, mas evitamos o custo mesmo assim.
+	if ( hc_is_elementor_editor() ) {
+		return;
+	}
+
+	$modules = array(
+		'hc-ui-hover' => 'assets/js/ui/hover.js',
+	);
+
+	foreach ( $modules as $handle => $rel ) {
+		if ( ! hc_asset_exists( $rel ) ) {
+			continue;
+		}
+
+		hc_enqueue_script( $handle, $rel );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'hc_enqueue_ui_scripts', 20 );
 
 /* -------------------------------------------------------------------------
  * Body class

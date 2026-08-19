@@ -21,9 +21,11 @@
  * Animacoes que deslocam elementos no eixo X costumam criar barra de rolagem
  * horizontal. `clip` corta sem criar contexto de scroll (ao contrario de
  * `hidden`, que quebraria o position: sticky dos filhos).
+ * Outros ajustes.
  */
 body {
 	overflow-x: clip;
+	text-wrap: balance;
 }
 
 /* -------------------------------------------------------------------------

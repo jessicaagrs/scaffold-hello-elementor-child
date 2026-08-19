@@ -5,8 +5,6 @@
    Sao efeitos ciclicos ou de hover: nao dependem de scroll, nao precisam de
    timeline e nao valem o custo de JS. Todas partem do estado VISIVEL, entao
    nenhuma delas some se o JS falhar.
-
-   Regra do projeto: animar apenas `transform` e `opacity`.
    ========================================================================= */
 
 /* =========================================================================
@@ -127,7 +125,6 @@
    ========================================================================= */
 
 @media (prefers-reduced-motion: reduce) {
-
 	.anim-float {
 		animation: none !important;
 		transform: none !important;
