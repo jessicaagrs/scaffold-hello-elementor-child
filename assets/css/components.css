@@ -42,29 +42,24 @@
 	overflow: hidden;
 }
 
+/*
+ * O overflow-x/scroll-snap e o fallback para quando o JS nao roda (falha de
+ * rede, reduced motion, tela pequena): vira um carrossel horizontal nativo.
+ * O conteudo continua acessivel.
+ */
 .js-hscroll__track {
 	display: flex;
 	flex-wrap: nowrap;
 	align-items: stretch;
 	/* A largura vem do conteudo: e ela que define a distancia do scroll. */
 	width: max-content;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
 	will-change: transform;
 }
 
 .js-hscroll__item {
 	flex: 0 0 auto;
-}
-
-/*
- * Fallback quando o JS nao roda (falha de rede, reduced motion, tela pequena):
- * vira um carrossel horizontal nativo, com snap. O conteudo continua acessivel.
- */
-.js-hscroll__track {
-	overflow-x: auto;
-	scroll-snap-type: x mandatory;
-}
-
-.js-hscroll__item {
 	scroll-snap-align: start;
 }
 
@@ -77,18 +72,3 @@
 	scroll-snap-type: none;
 }
 
-/* -------------------------------------------------------------------------
-   Card de exemplo
-   ------------------------------------------------------------------------- */
-
-.card {
-	position: relative;
-	overflow: hidden;
-	border-radius: 16px;
-	transition: transform 0.35s ease, box-shadow 0.35s ease;
-}
-
-.card:hover {
-	transform: translateY(-6px);
-	box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
-}

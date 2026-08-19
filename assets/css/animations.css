@@ -13,6 +13,9 @@
 
    Opcional:
      style="--float-distance: 14px; --float-duration: 4s;"
+
+   Varios elementos irmaos flutuam em sincronia por padrao. Para desencontrar,
+   de a cada um uma --float-duration diferente (3s / 3.4s / 3.8s).
    ========================================================================= */
 
 @keyframes hc-float {
@@ -30,15 +33,6 @@
 .anim-float {
 	animation: hc-float var(--float-duration, 3s) ease-in-out infinite;
 	will-change: transform;
-}
-
-/* Escalona varios elementos irmaos para nao flutuarem em sincronia. */
-.anim-float:nth-of-type(2n) {
-	animation-delay: -0.8s;
-}
-
-.anim-float:nth-of-type(3n) {
-	animation-delay: -1.6s;
 }
 
 /* =========================================================================
@@ -136,13 +130,6 @@
 
 	.anim-shine::before {
 		display: none !important;
-	}
-
-	/* Sem transform gratuito nos cards. */
-	.card,
-	.card:hover {
-		transition: none !important;
-		transform: none !important;
 	}
 
 	/* Nada de will-change sobrando ocupando memoria de GPU. */

@@ -7,7 +7,8 @@
  *   - criar tudo dentro de um gsap.context(), o que permite destruir o conjunto
  *     inteiro sem vazar ScrollTriggers
  *
- * Nenhum modulo inicializa sozinho. Quem dispara e o main.js, sempre por ultimo.
+ * Nenhum modulo inicializa sozinho. O kickoff no fim deste arquivo dispara no
+ * DOMContentLoaded, quando todos os scripts `defer` ja rodaram.
  */
 (function (window, document) {
 	'use strict';
@@ -45,7 +46,6 @@
 
 	var SiteAnim = {
 
-		version: '1.0.0',
 		settings: settings,
 
 		/** Modulos registrados: { name, fn }. */
@@ -170,23 +170,6 @@
 			}
 		},
 
-		/**
-		 * Destroi e recria tudo. Caro — use apenas quando o DOM mudou de verdade.
-		 */
-		rebuild: function () {
-			this.destroy();
-			this.init();
-		},
-
-		/**
-		 * Todos os ScrollTriggers ativos na pagina. Util para debug:
-		 *   SiteAnim.triggers().length
-		 *
-		 * @return {Array}
-		 */
-		triggers: function () {
-			return window.ScrollTrigger ? window.ScrollTrigger.getAll() : [];
-		},
 
 		/* --- helpers de data-attributes, usados pelos modulos --- */
 
@@ -218,18 +201,6 @@
 			return (value === null || value === '') ? fallback : value;
 		},
 
-		/**
-		 * Le um data-attribute booleano (presenca do atributo = true).
-		 *
-		 * @param {Element} el   Elemento.
-		 * @param {string}  attr Nome do atributo.
-		 * @return {boolean}
-		 */
-		bool: function (el, attr) {
-			var value = el.getAttribute(attr);
-
-			return value !== null && value !== 'false' && value !== '0';
-		},
 
 		log: function (message) {
 			if (settings.debug) {
@@ -251,15 +222,13 @@
 		}
 	}
 
-	if (typeof motionQuery.addEventListener === 'function') {
-		motionQuery.addEventListener('change', onMotionPreferenceChange);
-	} else if (typeof motionQuery.addListener === 'function') {
-		// Safari antigo.
-		motionQuery.addListener(onMotionPreferenceChange);
-	}
+	motionQuery.addEventListener('change', onMotionPreferenceChange);
 
 	// Imagens/fontes terminando de carregar mudam as alturas: recalcula.
+	// O init() aqui e so rede de seguranca (script injetado tarde); e
+	// idempotente, entao no fluxo normal nao faz nada.
 	window.addEventListener('load', function () {
+		SiteAnim.init();
 		SiteAnim.refresh();
 	});
 
@@ -283,20 +252,25 @@
 		}
 	}, true);
 
-	function bindElementorHooks() {
-		if (!window.elementorFrontend || !window.elementorFrontend.hooks) {
-			return;
-		}
-
-		window.elementorFrontend.hooks.addAction('frontend/element_ready/global', debouncedRefresh);
-	}
-
+	// O evento so dispara depois que o elementorFrontend.hooks existe — por isso
+	// nao ha versao "caso ja tenha inicializado": com defer, este script sempre roda antes.
 	if (window.jQuery) {
-		window.jQuery(window).on('elementor/frontend/init', bindElementorHooks);
+		window.jQuery(window).on('elementor/frontend/init', function () {
+			window.elementorFrontend.hooks.addAction('frontend/element_ready/global', debouncedRefresh);
+		});
 	}
-
-	bindElementorHooks();
 
 	window.SiteAnim = SiteAnim;
+
+	// Kickoff. Com `defer` todos os modulos ja se registraram quando o
+	// DOMContentLoaded dispara — por isso a inicializacao mora aqui, e nao em
+	// um script separado no fim da fila.
+	if (document.readyState === 'complete') {
+		SiteAnim.init();
+	} else {
+		document.addEventListener('DOMContentLoaded', function () {
+			SiteAnim.init();
+		});
+	}
 
 }(window, document));

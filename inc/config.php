@@ -51,9 +51,9 @@ return array(
 	 *   duration        Segundos ate a rolagem "assentar". 1.2 e o padrao do
 	 *                   Lenis; 1.6-2.0 da a sensacao de deslize. Acima de ~2.5
 	 *                   o site comeca a parecer lento pra responder.
-	 *   easing          Nome de uma curva definida em assets/js/smooth-scroll.js:
-	 *                   'expoOut' (padrao do Lenis), 'expoSoft' (cauda mais
-	 *                   longa, mais macio) ou 'quintOut' (mais direto).
+	 *   easing          'expoSoft' — cauda mais longa que a expo do Lenis, o
+	 *                   scroll "pousa" em vez de parar. Qualquer outro valor
+	 *                   usa o default do Lenis.
 	 *   wheelMultiplier Quanto cada "clique" da roda avanca. Abaixo de 1 o
 	 *                   scroll fica mais curto e controlado.
 	 *   syncTouch       No mobile, aplica a mesma interpolacao ao toque. Deixe

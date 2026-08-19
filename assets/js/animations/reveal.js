@@ -47,7 +47,9 @@
 
 			var stagger = app.num(el, 'data-reveal-stagger', 0);
 			var children = Array.prototype.slice.call(el.children);
-			var replay = app.bool(el, 'data-reveal-replay');
+			// Presenca do atributo = true; 'false' e '0' desligam.
+			var replayAttr = el.getAttribute('data-reveal-replay');
+			var replay = replayAttr !== null && replayAttr !== 'false' && replayAttr !== '0';
 
 			// Com stagger, quem anima sao os filhos diretos; sem, o proprio elemento.
 			var targets = (stagger > 0 && children.length) ? children : el;

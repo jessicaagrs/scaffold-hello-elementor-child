@@ -60,8 +60,3 @@ video {
 	max-width: 100%;
 	height: auto;
 }
-
-/* Evita salto de layout enquanto a imagem carrega. */
-img[width][height] {
-	height: auto;
-}

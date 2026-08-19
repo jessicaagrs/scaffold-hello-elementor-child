@@ -19,17 +19,14 @@
 	 * O usuario pediu menos movimento? Entao nao ligamos nada.
 	 */
 	function prefersReducedMotion() {
-		return window.matchMedia
-			&& window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 	}
 
 	/**
 	 * Dispositivo sem hover real (touch): tilt nao faz sentido.
 	 */
 	function hasFinePointer() {
-		return window.matchMedia
-			? window.matchMedia('(hover: hover) and (pointer: fine)').matches
-			: true;
+		return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 	}
 
 	/**

@@ -28,18 +28,7 @@ function hc_config( $key = null, $default = null ) {
 	static $config = null;
 
 	if ( null === $config ) {
-		$config = require HC_DIR . '/inc/config.php';
-
-		$config = wp_parse_args(
-			(array) $config,
-			array(
-				'front_page'    => false,
-				'pages'         => array(),
-				'post_types'    => array(),
-				'lenis'         => false,
-				'lenis_options' => array(),
-			)
-		);
+		$config = (array) require HC_DIR . '/inc/config.php';
 	}
 
 	if ( null === $key ) {
@@ -86,13 +75,7 @@ function hc_asset_exists( $rel ) {
  * @return string
  */
 function hc_asset_ver( $rel ) {
-	$file = hc_asset_path( $rel );
-
-	if ( file_exists( $file ) ) {
-		return (string) filemtime( $file );
-	}
-
-	return HC_VER;
+	return (string) ( @filemtime( hc_asset_path( $rel ) ) ?: HC_VER ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 }
 
 /**
@@ -124,38 +107,24 @@ function hc_is_elementor_editor() {
 /**
  * Esta requisicao deve carregar a camada de animacoes?
  *
- * Use o filtro `hc_load_animations` para casos que o config nao cobre.
- * Ex.: forcar em todos os posts de uma categoria:
- *
- *     add_filter( 'hc_load_animations', function ( $load ) {
- *         return $load || is_category( 'cases' );
- *     } );
- *
  * @return bool
  */
 function hc_should_load_animations() {
-	$load = false;
-
 	if ( hc_config( 'front_page' ) && is_front_page() ) {
-		$load = true;
+		return true;
 	}
 
-	$pages = array_filter( (array) hc_config( 'pages' ) );
-	if ( ! $load && $pages && is_page( $pages ) ) {
-		$load = true;
+	$pages = array_filter( (array) hc_config( 'pages', array() ) );
+	if ( $pages && is_page( $pages ) ) {
+		return true;
 	}
 
-	$post_types = array_filter( (array) hc_config( 'post_types' ) );
-	if ( ! $load && $post_types && is_singular( $post_types ) ) {
-		$load = true;
+	$post_types = array_filter( (array) hc_config( 'post_types', array() ) );
+	if ( $post_types && is_singular( $post_types ) ) {
+		return true;
 	}
 
-	/**
-	 * Filtra a decisao de carregar a camada de animacoes.
-	 *
-	 * @param bool $load Resultado calculado a partir de inc/config.php.
-	 */
-	return (bool) apply_filters( 'hc_load_animations', $load );
+	return false;
 }
 
 /**
@@ -164,21 +133,15 @@ function hc_should_load_animations() {
  * @return bool
  */
 function hc_lenis_enabled() {
-	$enabled = hc_config( 'lenis' ) && hc_asset_exists( 'assets/js/vendor/lenis.min.js' );
-
-	/**
-	 * Filtra o uso do Lenis nesta requisicao.
-	 *
-	 * @param bool $enabled Ligado no config E com a lib presente no disco.
-	 */
-	return (bool) apply_filters( 'hc_lenis_enabled', $enabled );
+	return (bool) hc_config( 'lenis' ) && hc_asset_exists( 'assets/js/vendor/lenis.min.js' );
 }
 
 /**
  * Enfileira um script do tema com defer e cache-busting.
  *
  * `defer` preserva a ordem de execucao entre os scripts, o que mantem o
- * registry do SiteAnim funcionando (modulos registram, main.js inicializa).
+ * registry do SiteAnim funcionando: os modulos se registram antes de o core
+ * inicializar no DOMContentLoaded.
  *
  * @param string $handle Handle do script.
  * @param string $rel    Caminho relativo a raiz do child theme.
@@ -188,18 +151,6 @@ function hc_lenis_enabled() {
 function hc_enqueue_script( $handle, $rel, $deps = array() ) {
 	wp_enqueue_script( $handle, hc_asset_url( $rel ), $deps, hc_asset_ver( $rel ), true );
 	wp_script_add_data( $handle, 'strategy', 'defer' );
-}
-
-/**
- * Loga um aviso apenas com WP_DEBUG ligado.
- *
- * @param string $message Mensagem.
- * @return void
- */
-function hc_debug_log( $message ) {
-	if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-		error_log( '[hello-elementor-child] ' . $message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
-	}
 }
 
 /* -------------------------------------------------------------------------
@@ -261,7 +212,7 @@ add_action( 'wp_enqueue_scripts', 'hc_enqueue_styles', 20 );
  * Enfileira a camada de animacoes, na ordem correta e so onde e necessaria.
  *
  * Ordem final:
- *   gsap -> ScrollTrigger -> lenis -> hc-settings -> hc-core -> modulos -> hc-main
+ *   gsap -> ScrollTrigger -> lenis -> hc-core (+ hcSettings inline) -> modulos
  *
  * @return void
  */
@@ -279,7 +230,9 @@ function hc_enqueue_scripts() {
 
 	foreach ( $required as $rel ) {
 		if ( ! hc_asset_exists( $rel ) ) {
-			hc_debug_log( sprintf( 'Lib ausente: %s. A camada de animacoes nao foi carregada.', $rel ) );
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				error_log( sprintf( '[hello-elementor-child] Lib ausente: %s. A camada de animacoes nao foi carregada.', $rel ) ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			}
 			return;
 		}
 	}
@@ -294,45 +247,24 @@ function hc_enqueue_scripts() {
 		hc_enqueue_script( 'lenis', 'assets/js/vendor/lenis.min.js' );
 	}
 
-		// Plugins opcionais do GSAP: entram apenas se o arquivo existir no disco.
-		// $gsap_plugins = array(
-		// 	'gsap-motionpath' => 'assets/js/vendor/MotionPathPlugin.min.js',
-		// );
-
-		// $plugin_handles = array();
-
-		// foreach ( $gsap_plugins as $handle => $rel ) {
-		// 	if ( ! hc_asset_exists( $rel ) ) {
-		// 		continue;
-		// 	}
-
-		// 	hc_enqueue_script( $handle, $rel, array( 'gsap' ) );
-		// 	$plugin_handles[] = $handle;
-		// }
-
-	// 2. Settings — handle virtual, so para imprimir window.hcSettings com os tipos corretos.
-	wp_register_script( 'hc-settings', false, array(), HC_VER, true );
-	wp_enqueue_script( 'hc-settings' );
+	// 2. Nucleo, com window.hcSettings impresso logo antes. O inline nao e
+	// defer, entao ja existe quando o core.js roda.
+	hc_enqueue_script( 'hc-core', 'assets/js/core.js', array( 'gsap', 'gsap-scrolltrigger' ) );
 	wp_add_inline_script(
-		'hc-settings',
+		'hc-core',
 		'window.hcSettings = ' . wp_json_encode(
 			array(
 				'lenis'        => $use_lenis,
 				'lenisOptions' => (object) (array) hc_config( 'lenis_options', array() ),
 				'debug'        => (bool) ( defined( 'WP_DEBUG' ) && WP_DEBUG ),
 			)
-		) . ';'
+		) . ';',
+		'before'
 	);
 
-	// 3. Nucleo.
-	hc_enqueue_script( 'hc-core', 'assets/js/core.js', array( 'gsap', 'gsap-scrolltrigger', 'hc-settings' ) ); //array_merge( array( 'gsap', 'gsap-scrolltrigger', 'hc-settings' ), $plugin_handles )
-
-	// 4. Modulos. Cada um se registra no SiteAnim; nenhum inicializa sozinho.
-	$modules = array();
-
+	// 3. Modulos. Cada um se registra no SiteAnim; nenhum inicializa sozinho.
 	if ( $use_lenis ) {
 		hc_enqueue_script( 'hc-smooth-scroll', 'assets/js/smooth-scroll.js', array( 'hc-core', 'lenis' ) );
-		$modules[] = 'hc-smooth-scroll';
 	}
 
 	$animations = array(
@@ -347,11 +279,8 @@ function hc_enqueue_scripts() {
 		}
 
 		hc_enqueue_script( $handle, $rel, array( 'hc-core' ) );
-		$modules[] = $handle;
 	}
 
-	// 5. Kickoff — sempre por ultimo.
-	hc_enqueue_script( 'hc-main', 'assets/js/main.js', array_merge( array( 'hc-core' ), $modules ) );
 }
 add_action( 'wp_enqueue_scripts', 'hc_enqueue_scripts', 20 );
 
@@ -365,8 +294,7 @@ add_action( 'wp_enqueue_scripts', 'hc_enqueue_scripts', 20 );
  *     estes scripts continuam carregando normalmente.
  *
  * Cada modulo em assets/js/ui/ e autossuficiente: escuta o proprio
- * DOMContentLoaded e nao depende da ordem de carregamento. Para adicionar um
- * novo efeito, crie o arquivo e registre uma linha no array $modules abaixo.
+ * DOMContentLoaded e nao depende da ordem de carregamento.
  *
  * @return void
  */
@@ -378,17 +306,7 @@ function hc_enqueue_ui_scripts() {
 		return;
 	}
 
-	$modules = array(
-		'hc-ui-hover' => 'assets/js/ui/hover.js',
-	);
-
-	foreach ( $modules as $handle => $rel ) {
-		if ( ! hc_asset_exists( $rel ) ) {
-			continue;
-		}
-
-		hc_enqueue_script( $handle, $rel );
-	}
+	hc_enqueue_script( 'hc-ui-hover', 'assets/js/ui/hover.js' );
 }
 add_action( 'wp_enqueue_scripts', 'hc_enqueue_ui_scripts', 20 );
 
