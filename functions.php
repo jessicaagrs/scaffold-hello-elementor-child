@@ -16,3 +16,4 @@ define( 'HC_URI', get_stylesheet_directory_uri() );
 define( 'HC_VER', '1.0.0' );
 
 require_once HC_DIR . '/inc/enqueue.php';
+require_once HC_DIR . '/inc/uploads.php';

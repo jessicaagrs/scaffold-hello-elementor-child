@@ -1,3 +1,247 @@
+/* ==========================================================================
+   Responsive Grid Variables (RGV)
+   Cole este código em: Elementor > Configurações da página > CSS Personalizado
+   ========================================================================== */
+
+/* Wide (>= 2400px) */
+@media (min-width: 2400px) {
+	:root {
+		--largurautil: 1200px;
+		--quantidadecolunas: 12;
+		--valordogap: 32px;
+	}
+}
+
+/* Desktop (1367–2399px) */
+@media (min-width: 1367px) and (max-width: 2399px) {
+	:root {
+		--largurautil: 1200px;
+		--quantidadecolunas: 12;
+		--valordogap: 32px;
+	}
+}
+
+/* Notebook (1201–1366px) */
+@media (min-width: 1201px) and (max-width: 1366px) {
+	:root {
+		--largurautil: 1100px;
+		--quantidadecolunas: 12;
+		--valordogap: 32px;
+	}
+}
+
+/* Tablet Paisagem (1025–1200px) */
+@media (min-width: 1025px) and (max-width: 1200px) {
+	:root {
+		--largurautil: 924px;
+		--quantidadecolunas: 6;
+		--valordogap: 16px;
+	}
+}
+
+/* Tablet Retrato (881–1024px) */
+@media (min-width: 881px) and (max-width: 1024px) {
+	:root {
+		--largurautil: 780px;
+		--quantidadecolunas: 6;
+		--valordogap: 16px;
+	}
+}
+
+/* Celular Paisagem (768–880px) */
+@media (min-width: 768px) and (max-width: 880px) {
+	:root {
+		--largurautil: 728px;
+		--quantidadecolunas: 6;
+		--valordogap: 16px;
+	}
+}
+
+/* Celular Retrato (<= 767px) */
+@media (max-width: 767px) {
+	:root {
+		--largurautil: 360px;
+		--quantidadecolunas: 4;
+		--valordogap: 16px;
+	}
+}
+
+/* ==========================================================================
+   Variáveis derivadas — não editar, apenas usar nos widgets
+   ========================================================================== */
+:root {
+	--texto64: clamp(2rem, 1.14rem + 3.81vw, 4rem);
+	--altura64-130: clamp(2.63rem, 1.53rem + 4.88vw, 5.19rem);
+	--altura64-150: clamp(3rem, 1.71rem + 5.71vw, 6rem);
+	--texto56: clamp(2.5rem, 2.07rem + 1.9vw, 3.5rem);
+	--altura56-130: clamp(3.25rem, 2.69rem + 2.5vw, 4.56rem);
+	--altura56-150: clamp(3.75rem, 3.11rem + 2.86vw, 5.25rem);
+	--texto48: clamp(2rem, 1.57rem + 1.9vw, 3rem);
+	--altura48-130: clamp(2.63rem, 2.09rem + 2.38vw, 3.88rem);
+	--altura48-150: clamp(3rem, 2.36rem + 2.86vw, 4.5rem);
+	--texto44: clamp(2.25rem, 2.04rem + 0.95vw, 2.75rem);
+	--altura44-130: clamp(2.94rem, 2.67rem + 1.19vw, 3.56rem);
+	--altura44-150: clamp(3.38rem, 3.05rem + 1.43vw, 4.13rem);
+	--texto40: clamp(1.75rem, 1.43rem + 1.43vw, 2.5rem);
+	--altura40-130: clamp(2.25rem, 1.82rem + 1.9vw, 3.25rem);
+	--altura40-150: clamp(2.63rem, 2.14rem + 2.14vw, 3.75rem);
+	--texto36: clamp(1.75rem, 1.54rem + 0.95vw, 2.25rem);
+	--altura36-130: clamp(2.25rem, 1.96rem + 1.31vw, 2.94rem);
+	--altura36-150: clamp(2.63rem, 2.3rem + 1.43vw, 3.38rem);
+	--texto32: clamp(1.5rem, 1.29rem + 0.95vw, 2rem);
+	--altura32-130: clamp(1.94rem, 1.64rem + 1.31vw, 2.63rem);
+	--altura32-150: clamp(2.25rem, 1.93rem + 1.43vw, 3rem);
+	--texto28: clamp(1.25rem, 1.04rem + 0.95vw, 1.75rem);
+	--altura28-130: clamp(1.63rem, 1.36rem + 1.19vw, 2.25rem);
+	--altura28-150: clamp(1.63rem, 1.36rem + 1.19vw, 2.25rem);
+	--texto24: clamp(1.13rem, 0.96rem + 0.71vw, 1.5rem);
+	--altura24-130: clamp(1.44rem, 1.22rem + 0.95vw, 1.94rem);
+	--altura24-150: clamp(1.69rem, 1.45rem + 1.07vw, 2.25rem);
+	--texto22: clamp(1rem, 0.84rem + 0.71vw, 1.38rem);
+	--altura22-130: clamp(1.31rem, 1.1rem + 0.95vw, 1.81rem);
+	--altura22-150: clamp(1.5rem, 1.26rem + 1.07vw, 2.06rem);
+	--texto20: clamp(1rem, 0.89rem + 0.48vw, 1.25rem);
+	--altura20-130: clamp(1.31rem, 1.18rem + 0.6vw, 1.63rem);
+	--altura20-150: clamp(1.31rem, 1.18rem + 0.6vw, 1.63rem);
+	--texto18: clamp(1rem, 0.95rem + 0.24vw, 1.13rem);
+	--altura18-130: clamp(1.31rem, 1.26rem + 0.24vw, 1.44rem);
+	--altura18-150: clamp(1.5rem, 1.42rem + 0.36vw, 1.69rem);
+	--texto16: clamp(0.88rem, 0.82rem + 0.24vw, 1rem);
+	--altura16-130: clamp(1.13rem, 1.04rem + 0.36vw, 1.31rem);
+	--altura16-150: clamp(1.31rem, 1.23rem + 0.36vw, 1.5rem);
+	--texto14: clamp(0.75rem, 0.7rem + 0.24vw, 0.88rem);
+	--altura14-130: clamp(1rem, 0.95rem + 0.24vw, 1.13rem);
+	--altura14-150: clamp(1.13rem, 1.04rem + 0.36vw, 1.31rem);
+	--texto12: clamp(0.63rem, 0.57rem + 0.24vw, 0.75rem);
+	--altura12-130: clamp(0.81rem, 0.73rem + 0.36vw, 1rem);
+	--altura12-150: clamp(0.94rem, 0.86rem + 0.36vw, 1.13rem);
+
+	--quantidadedegaps: calc(var(--quantidadecolunas) - 1);
+	--gapssomados: calc(var(--valordogap) * var(--quantidadedegaps));
+	--colunassomadassemgaps: calc(var(--largurautil) - var(--gapssomados));
+	--larguradeumacoluna: calc(
+		var(--colunassomadassemgaps) / var(--quantidadecolunas)
+	);
+
+	--umacoluna: var(--larguradeumacoluna);
+	--umacolunacomgap: calc(var(--larguradeumacoluna) + var(--valordogap));
+
+	--duascolunas: calc((var(--larguradeumacoluna) * 2) + var(--valordogap));
+	--duascolunascomgap: calc(var(--duascolunas) + var(--valordogap));
+
+	--trescolunas: calc(
+		(var(--larguradeumacoluna) * 3) + (var(--valordogap) * 2)
+	);
+	--trescolunascomgap: calc(var(--trescolunas) + var(--valordogap));
+
+	--quatrocolunas: calc(
+		(var(--larguradeumacoluna) * 4) + (var(--valordogap) * 3)
+	);
+	--quatrocolunascomgap: calc(var(--quatrocolunas) + var(--valordogap));
+
+	--cincocolunas: calc(
+		(var(--larguradeumacoluna) * 5) + (var(--valordogap) * 4)
+	);
+	--cincocolunascomgap: calc(var(--cincocolunas) + var(--valordogap));
+
+	--seiscolunas: calc(
+		(var(--larguradeumacoluna) * 6) + (var(--valordogap) * 5)
+	);
+	--seiscolunascomgap: calc(var(--seiscolunas) + var(--valordogap));
+
+	--setecolunas: calc(
+		(var(--larguradeumacoluna) * 7) + (var(--valordogap) * 6)
+	);
+	--setecolunascomgap: calc(var(--setecolunas) + var(--valordogap));
+
+	--oitocolunas: calc(
+		(var(--larguradeumacoluna) * 8) + (var(--valordogap) * 7)
+	);
+	--oitocolunascomgap: calc(var(--oitocolunas) + var(--valordogap));
+
+	--novecolunas: calc(
+		(var(--larguradeumacoluna) * 9) + (var(--valordogap) * 8)
+	);
+	--novecolunascomgap: calc(var(--novecolunas) + var(--valordogap));
+
+	--dezcolunas: calc(
+		(var(--larguradeumacoluna) * 10) + (var(--valordogap) * 9)
+	);
+	--dezcolunascomgap: calc(var(--dezcolunas) + var(--valordogap));
+
+	--onzecolunas: calc(
+		(var(--larguradeumacoluna) * 11) + (var(--valordogap) * 10)
+	);
+	--onzecolunascomgap: calc(var(--onzecolunas) + var(--valordogap));
+
+	--dozecolunas: calc(
+		(var(--larguradeumacoluna) * 12) + (var(--valordogap) * 11)
+	);
+	--dozecolunascomgap: calc(var(--dozecolunas) + var(--valordogap));
+
+	--trezecolunas: calc(
+		(var(--larguradeumacoluna) * 13) + (var(--valordogap) * 12)
+	);
+	--trezecolunascomgap: calc(var(--trezecolunas) + var(--valordogap));
+
+	--quatorzecolunas: calc(
+		(var(--larguradeumacoluna) * 14) + (var(--valordogap) * 13)
+	);
+	--quatorzecolunascomgap: calc(var(--quatorzecolunas) + var(--valordogap));
+
+	--quinzecolunas: calc(
+		(var(--larguradeumacoluna) * 15) + (var(--valordogap) * 14)
+	);
+	--quinzecolunascomgap: calc(var(--quinzecolunas) + var(--valordogap));
+
+	--dezesseiscolunas: calc(
+		(var(--larguradeumacoluna) * 16) + (var(--valordogap) * 15)
+	);
+	--dezesseiscolunascomgap: calc(var(--dezesseiscolunas) + var(--valordogap));
+
+	--dezessetecolunas: calc(
+		(var(--larguradeumacoluna) * 17) + (var(--valordogap) * 16)
+	);
+	--dezessetecolunascomgap: calc(var(--dezessetecolunas) + var(--valordogap));
+
+	--dezoitocolunas: calc(
+		(var(--larguradeumacoluna) * 18) + (var(--valordogap) * 17)
+	);
+	--dezoitocolunascomgap: calc(var(--dezoitocolunas) + var(--valordogap));
+
+	--dezenovecolunas: calc(
+		(var(--larguradeumacoluna) * 19) + (var(--valordogap) * 18)
+	);
+	--dezenovecolunascomgap: calc(var(--dezenovecolunas) + var(--valordogap));
+
+	--vintecolunas: calc(
+		(var(--larguradeumacoluna) * 20) + (var(--valordogap) * 19)
+	);
+	--vintecolunascomgap: calc(var(--vintecolunas) + var(--valordogap));
+
+	--vinteumacolunas: calc(
+		(var(--larguradeumacoluna) * 21) + (var(--valordogap) * 20)
+	);
+	--vinteumacolunascomgap: calc(var(--vinteumacolunas) + var(--valordogap));
+
+	--vinteduascolunas: calc(
+		(var(--larguradeumacoluna) * 22) + (var(--valordogap) * 21)
+	);
+	--vinteduascolunascomgap: calc(var(--vinteduascolunas) + var(--valordogap));
+
+	--vintetrescolunas: calc(
+		(var(--larguradeumacoluna) * 23) + (var(--valordogap) * 22)
+	);
+	--vintetrescolunascomgap: calc(var(--vintetrescolunas) + var(--valordogap));
+
+	--vintequatrocolunas: calc(
+		(var(--larguradeumacoluna) * 24) + (var(--valordogap) * 23)
+	);
+	--vintequatrocolunascomgap: calc(
+		var(--vintequatrocolunas) + var(--valordogap)
+	);
+}
+
 /* =========================================================================
    base.css — ajustes globais.
 
